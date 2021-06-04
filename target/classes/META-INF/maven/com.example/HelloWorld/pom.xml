@@ -1,0 +1,245 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<!--
+		The groupId is basically the folder structure in which the
+		generated artifact(s) for this project will be stored.
+		Local: C:\Users\USERNAME\.m2\repository\com\example\
+		Nexus: http://igti-nexus.lab.wagerworks.com/content/repositories/snapshots/com/example/
+		
+	-->
+	<groupId>com.example</groupId>
+	
+	<!--
+		The artifactId is the name of the artifact(s) which will be created.
+		They will be installed in the following locations by running the following commands
+		mvn clean install -> C:\Users\USERNAME\.m2\repository\com\example\HelloWorld\1.0.0-SNAPSHOT\HelloWorld-1.0.0-SNAPSHOT.jar
+		mvn clean deploy -> http://igti-nexus.lab.wagerworks.com/content/repositories/snapshots/com/example/HelloWorld/1.0.0-SNAPSHOT/HelloWorld-1.0.0-SNAPSHOT.jar
+		NOTE: Only Jenkins has permissions to deploy to the nexus.
+	-->
+	<artifactId>HelloWorld</artifactId>
+	
+	<!--
+		The version which will be appended to the location of the artifact and the artifact name (version can be removed from jar files by
+		changing jar plugin	configuration)
+		See: https://maven.apache.org/plugins/maven-jar-plugin/jar-mojo.html#finalName
+		
+		There are 2 types of versions. Ones that end with '-SNAPSHOT' (SNAPSHOT build) and ones which do not (RELEASE build). The difference
+		is that SNAPSHOT builds are temporary and can be considered development builds. SNAPSHOT builds can be overwritten with the
+		same version. RELEASE builds cannot be overwritten and can only be released once. Once development is complete for a specific
+		version the '-SNAPSHOT' postfix is removed from the version and a RELEASE version is created. Once a RELEASE build is created the
+		version is changed to the next SNAPSHOT.
+		
+		Version flow example: 1.0.0-SNAPSHOT -> 1.0.0 (RELEASE) -> 1.0.1-SNAPSHOT -> 1.0.1 (RELEASE) -> 1.0.2-SNAPSHOT ...
+	-->
+	<version>1.0.0-SNAPSHOT</version>
+	
+	<!--
+		The packaging tag defines what type of package will be created for this artifact. Usually for plain java projects this should be set to jar.
+		For Java web applications (Tomcat apps) the packaging should be 'war' and the project directory structure and content should match the 
+		default maven web application project structure.
+		See https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html for project directory layout.
+		See https://maven.apache.org/ref/3.3.9/maven-core/default-bindings.html for more packaging types.
+		
+		Plugins can also add different types of packaging and project layouts.
+	-->
+	<packaging>jar</packaging>
+	
+	<!--
+		A longer name for the project/artifact.
+	-->
+	<name>Hello World Example</name>
+	
+	<!-- 
+		Your own custom properties you want to use in the project. You can set properties here for plugin and dependency versions and use tokens
+		in the plugin/dependency version tag so they are easier to find/update when needed. Maven has plugins/commands to
+		programmatically/automatically update versions for plugins and/or dependencies. Properties that start with 'project.' set or override
+		default properties for the project. For example the project.build.sourceEncoding property sets the encoding to UTF-8 which may normally
+		default to the default system encoding. You can override these properties when running the mvn command via the command line.
+		For example: 'mvn clean install -Djava.version=1.5' will build this project but will override the java.version property set in this
+		pom file with the one passed in which is 1.5.
+		
+		See http://maven.apache.org/maven-release/maven-release-plugin/update-versions-mojo.html.
+	-->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<scm.p4.user>codebldr</scm.p4.user>
+		<scm.p4.host>sf-ops08.corp.wagerworks.com</scm.p4.host>
+		<scm.p4.port>1666</scm.p4.port>
+		<scm.p4.path>//streams_java_examples/HelloWorld</scm.p4.path>
+		<java.version>1.7</java.version>
+	</properties>
+	
+	<!-- 
+		DependencyManagement and Dependencies nodes
+	-->
+	<dependencyManagement>
+		<dependencies>
+			<!--
+				dependencies which will be used for this project and inherited and used by child modules 
+				of this project go here.
+			-->
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+			<!--
+				dependencies which will be used ONLY for this project and which will NOT be inherited and used by child modules 
+				of this project go here.
+			-->
+	</dependencies>
+	
+	<!-- 
+		Build profiles for different build types. You can create different build types/settings depending on properties which 
+		are set or passed in when the mvn command is called.
+		
+		See http://maven.apache.org/guides/introduction/introduction-to-profiles.html for more info.
+	-->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<!--
+							plugins which will be used by this project and inherited by child modules of
+							this project go here.
+						-->
+					</plugins>
+				</pluginManagement>	
+				<plugins>
+						<!--
+							plugins which will be used ONLY by this project and which will NOT inherited by
+							child modules of this project go here.
+						-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<!-- maven-javadoc-plugin generates documentation from commonts in java code -->
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<!--
+							version of the plugin - different versions may have different features or 
+							different compatibility with java versions
+						-->
+						<version>2.9.1</version>
+						<executions>
+							<!--
+								You can execute the plugin more than once by having more executions. This allows you to
+								execute the plugin with different configuration or different goals.
+							-->
+							<execution>
+								<id>javadocs</id>
+								<goals>
+									<!--
+										Plugins have different goals which do different things.
+										Google the plugin artifactId to find what goals the plugin has.
+									-->
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<!--
+										plugin configuration properties would go here.
+										Google the plugin artifactId to find configuration options.
+									-->
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>2.5.1</version>
+						<executions>
+							<execution>
+								<configuration>
+									<source>${java.version}</source>
+									<target>${java.version}</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>default-jar</id>
+								<!-- 
+									All plugins have a default phase in which they run. You can override this by adding a phase tag.
+									This allows you to control when this execution of the plugin runs. This allows you to perform 
+									custom tasks before and after certain phases of the maven build process.
+									
+									See http://maven.apache.org/ref/3.2.1/maven-core/lifecycles.html for more info about
+									maven build phases/lifecycles.
+								-->
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<forceCreation>true</forceCreation>
+									<archive>
+										<addMavenDescriptor>true</addMavenDescriptor>
+										<manifest>
+											<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+											<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+										</manifest>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<!--
+		Configuration for nexus. This tells maven where the nexus so it can search it for plugins and dependencies, and so it can
+		deploy artifacts to the nexus after the build.
+	-->
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>http://igti-nexus.lab.wagerworks.com/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>http://igti-nexus.lab.wagerworks.com/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>nexus.release</id>
+			<name>Internal Release Repository</name>
+			<url>http://igti-nexus.lab.wagerworks.com/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus.snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<url>http://igti-nexus.lab.wagerworks.com/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<!--
+		Settings for perforce so that maven can automatically create release builds and update pom file versions and submit the changes.
+	-->
+	<scm>
+		<connection>scm:perforce:${scm.p4.user}@${scm.p4.host}:${scm.p4.port}:${scm.p4.path}</connection>
+		<developerConnection>scm:perforce:${scm.p4.user}@${scm.p4.host}:${scm.p4.port}:${scm.p4.path}</developerConnection>
+	</scm>
+	<!--
+		Settings for Jenkins in case you need to trigger builds or get info from Jenkins. (uncommon)
+	-->
+	<ciManagement>
+		<url>http://sf-build06.corp.wagerworks.com:8080/jenkins</url>
+	</ciManagement>
+</project>
